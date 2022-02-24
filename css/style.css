@@ -1,0 +1,19 @@
+*{
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+}
+
+body{
+    background-color: black;
+    color: white;
+    height: 100vh;
+}
+
+ul{
+    padding: 30px;
+}
+
+li{
+    padding-bottom: 10px;
+}
