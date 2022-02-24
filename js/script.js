@@ -1,7 +1,7 @@
 // Functions
 
 // Function check if you are a new user eles create a new list
-function addTutorial() {
+function startScript() {
     if(localStorage.getItem("new") == 1){
         // do nothing
     }
@@ -10,7 +10,11 @@ function addTutorial() {
         localStorage.setItem("data", JSON.stringify(list));
         localStorage.setItem("new", 1);
     }
+    createList();
 }
+
+// Activate script
+startScript();
 
 // Function get localStorage data in list
 function createList() {
@@ -22,6 +26,7 @@ function createList() {
         li.appendChild(document.createTextNode(key));
         ul.appendChild(li);
     }
+    addDrag();
 }
 
 //   Add new input
@@ -39,15 +44,13 @@ function newInput(){
 
 // Double tap to add input
 document.body.addEventListener("dblclick", event => {
-    newInput();
+    if(!document.querySelector("form")){
+        newInput();
+    }
+    else{
+        document.querySelector("input").select();
+    }
 })
-
-// Double space
-document.body.addEventListener("dblclick", event => {
-    newInput();
-})
-
-
 
 //   prevent submit
   function mySubmitFunction(e) {
@@ -62,7 +65,7 @@ document.body.addEventListener("dblclick", event => {
     list[document.querySelector("input").value] = { 'hoi2':'test2'};
     if(document.querySelector("input").value == ""){
         var select = document.querySelector('ul');
-  select.removeChild(select.lastChild);
+        select.removeChild(select.lastChild);
         return;
     }
     localStorage.setItem("data", JSON.stringify(list));
@@ -70,17 +73,56 @@ document.body.addEventListener("dblclick", event => {
     newInput();
   }
 
-  
+//   Add drag to all li items
+function addDrag(){
+    const box = document.querySelectorAll("li");
+    var startx;
+    var starty;
+    var movex;
 
+    for (let i = 0; i < box.length; i++) {
+        box[i].addEventListener('touchstart', function(e){
+        var touchobj = e.changedTouches[0]; 
+        startx = parseInt(touchobj.clientX); 
+        starty = parseInt(touchobj.clientY); 
+        }, false);
 
-// Activate functions
+        box[i].addEventListener('touchmove', function(e){
+        var touchobj = e.changedTouches[0]; 
+        movex = parseInt(touchobj.clientX); 
+        var movey = parseInt(touchobj.clientY); 
+        box[i].style.left = (movex - startx + 30) + "px";
+        box[i].style.top = movey + "px";
+        box[i].style.position = "fixed";
+        if(box.length != i+1){
+            box[i+1].style.paddingTop = "28px";
+        }
+        if(movex > window.innerWidth - 50){
+            box[i].style.opacity = "0.5";
+            document.querySelector('body').style.boxShadow = "inset  -75px 9px 26px -62px white";
+        }
+        else{
+            box[i].style.opacity = "1";
+            document.querySelector('body').style.boxShadow = "unset";
+        }
+        }, false);
 
-// Create a list
-addTutorial();
-
-// Add li to ul
-createList();
-
+        box[i].addEventListener('touchend', function(e){
+            box[i].style.position = "unset"
+            if(box.length != i+1){
+                box[i+1].style.paddingTop = "unset";
+            }
+            if(movex > window.innerWidth - 50){
+                const list = JSON.parse(localStorage.getItem("data"));
+                delete list[box[i].innerHTML];
+                localStorage.setItem("data", JSON.stringify(list));
+                createList();
+                document.querySelector('body').style.boxShadow = "unset";
+            }
+        }, false);
+    }
+}
+ 
 
 
 
