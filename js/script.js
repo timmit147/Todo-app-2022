@@ -79,18 +79,19 @@ function addDrag(){
     var startx;
     var starty;
     var movex;
+    var movey;
 
     for (let i = 0; i < box.length; i++) {
         box[i].addEventListener('touchstart', function(e){
-        var touchobj = e.changedTouches[0]; 
+            const touchobj = e.changedTouches[0]; 
         startx = parseInt(touchobj.clientX); 
         starty = parseInt(touchobj.clientY); 
         }, false);
 
         box[i].addEventListener('touchmove', function(e){
-        var touchobj = e.changedTouches[0]; 
+        const touchobj = e.changedTouches[0]; 
         movex = parseInt(touchobj.clientX); 
-        var movey = parseInt(touchobj.clientY); 
+        movey = parseInt(touchobj.clientY); 
         box[i].style.left = (movex - startx + 30) + "px";
         box[i].style.top = movey + "px";
         box[i].style.position = "fixed";
@@ -105,6 +106,32 @@ function addDrag(){
             box[i].style.opacity = "1";
             document.querySelector('body').style.boxShadow = "unset";
         }
+
+        for (let n = 0; n < i; n++) {
+            if(movey < starty - 30*(n+1) ){
+                box[(i-1)-n].style.paddingTop = "28px";
+                box[(i)-n].style.paddingTop = "unset";
+                if(box[i+1]){
+                    box[i+1].style.paddingTop = "0px";
+                }
+                // console.log("test");
+            }
+            else{
+                box[(i-1)-n].style.paddingTop = "unset";
+            }
+            // if(movey > starty + 30*(n+1) ){
+            //     console.log("test");
+            //     box[(i+1)+n].style.paddingBottom = "28px";
+            //     // box[(i)+n].style.paddingBottom = "unset";
+            //     // if(box[i-1]){
+            //     //     box[i-1].style.paddingBottom = "0px";
+            //     // }
+            // }
+            // else{
+            //     box[(i+1)+n].style.paddingBottom = "unset";
+            // }
+          }
+
         }, false);
 
         box[i].addEventListener('touchend', function(e){
