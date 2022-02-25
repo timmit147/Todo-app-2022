@@ -73,6 +73,8 @@ document.body.addEventListener("dblclick", event => {
     newInput();
   }
 
+var n = 0;
+var testa = 0;
 //   Add drag to all li items
 function addDrag(){
     const box = document.querySelectorAll("li");
@@ -83,9 +85,18 @@ function addDrag(){
 
     for (let i = 0; i < box.length; i++) {
         box[i].addEventListener('touchstart', function(e){
+            n = i;
             const touchobj = e.changedTouches[0]; 
         startx = parseInt(touchobj.clientX); 
         starty = parseInt(touchobj.clientY); 
+        testa = startx;
+        if(box[i+1]){
+            if(i == n+1){
+                n++;
+            }
+            box[n+1].style.paddingTop = "28px";
+        }
+        box[i].style.position = "fixed";
         }, false);
 
         box[i].addEventListener('touchmove', function(e){
@@ -93,11 +104,8 @@ function addDrag(){
         movex = parseInt(touchobj.clientX); 
         movey = parseInt(touchobj.clientY); 
         box[i].style.left = (movex - startx + 30) + "px";
-        box[i].style.top = movey + "px";
+        box[i].style.top = (movey - 10) + "px";
         box[i].style.position = "fixed";
-        if(box.length != i+1){
-            box[i+1].style.paddingTop = "28px";
-        }
         if(movex > window.innerWidth - 50){
             box[i].style.opacity = "0.5";
             document.querySelector('body').style.boxShadow = "inset  -75px 9px 26px -62px white";
@@ -106,39 +114,88 @@ function addDrag(){
             box[i].style.opacity = "1";
             document.querySelector('body').style.boxShadow = "unset";
         }
+        console.log(i);
+        if(testa + 20 < movey){
+            n++;
+            testa = movey;
+            if(n == i){
+                n++;
+            }
+            if(box[n]){
+                box[n].style.paddingTop = "0px";
+            }
+            if(box[n+1]){
+                box[n+1].style.paddingTop = "28px";   
+            }
+            
+        }
 
-        for (let n = 0; n < i; n++) {
-            if(movey < starty - 30*(n+1) ){
-                box[(i-1)-n].style.paddingTop = "28px";
-                box[(i)-n].style.paddingTop = "unset";
-                if(box[i+1]){
-                    box[i+1].style.paddingTop = "0px";
-                }
-                // console.log("test");
-            }
-            else{
-                box[(i-1)-n].style.paddingTop = "unset";
-            }
-            // if(movey > starty + 30*(n+1) ){
-            //     console.log("test");
-            //     box[(i+1)+n].style.paddingBottom = "28px";
-            //     // box[(i)+n].style.paddingBottom = "unset";
-            //     // if(box[i-1]){
-            //     //     box[i-1].style.paddingBottom = "0px";
-            //     // }
-            // }
-            // else{
-            //     box[(i+1)+n].style.paddingBottom = "unset";
-            // }
-          }
+        // if(testa - 20 > movey){ 
+        //     console.log("test");
+        //     box[n].style.backgroundColor = "red"; 
+        //     n--;
+        //     testa = movey;
+        //     console.log(n)
+        //     if(box[n+2]){
+        //     box[n+2].style.paddingTop = "0px"; 
+        //     }
+        //     if(box[n+1]){
+        //         box[n+1].style.paddingTop = "28px"; 
+        //     }
+        // }
+
+
+        // if(box[n+1]){
+        // box[n+1].style.paddingTop = "28px";
+        // box[i].style.paddingTop = "0px";
+        // }
+        
+
+        // if(box[n]){
+        // box[n].style.paddingTop = "0px";
+        // }
+
+
+        // if(testa + 20 < movey){
+        //     n++;
+        //     console.log(n);
+        //     testa = movey;
+        //     if(box[n]){
+        //     box[n].style.paddingTop = "0px";
+        //     }
+        //     if(box[n-1]){
+        //         n++;
+        //     }
+        //     box[n-1].style.backgroundColor = "red";
+        // }
+        // else{
+        //     if(box[n+1]){
+        //      box[n+1].style.paddingTop = "28px";
+        //     }
+        // }
+
+        // if(testa - 20 > movey){         
+        //     testa = movey;
+        //     n--;
+        //     console.log(n)  
+        //     box[n-1].style.paddingTop = "28px";
+        //     box[n].style.paddingTop = "0px";
+        //     if(box[n+2]){
+        //     box[n+2].style.paddingTop = "0px";
+        //     }
+        //     box[n].style.backgroundColor = "red";
+        // }
+
+
+     
 
         }, false);
 
         box[i].addEventListener('touchend', function(e){
-            box[i].style.position = "unset"
-            if(box.length != i+1){
+            if(box[i+1]){
                 box[i+1].style.paddingTop = "unset";
             }
+            box[i].style.position = "unset"
             if(movex > window.innerWidth - 50){
                 const list = JSON.parse(localStorage.getItem("data"));
                 delete list[box[i].innerHTML];

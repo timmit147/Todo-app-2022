@@ -16,4 +16,5 @@ ul{
 
 li{
     padding-bottom: 10px;
+    /* transition: padding 0.3s; */
 }
