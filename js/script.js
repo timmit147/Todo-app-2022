@@ -73,8 +73,6 @@ document.body.addEventListener("dblclick", event => {
     newInput();
   }
 
-var n = 0;
-var testa = 0;
 //   Add drag to all li items
 function addDrag(){
     const box = document.querySelectorAll("li");
@@ -82,19 +80,18 @@ function addDrag(){
     var starty;
     var movex;
     var movey;
+    var n = 0;
+
+    var liPosition = 0;
 
     for (let i = 0; i < box.length; i++) {
         box[i].addEventListener('touchstart', function(e){
-            n = i;
-            const touchobj = e.changedTouches[0]; 
+        const touchobj = e.changedTouches[0]; 
         startx = parseInt(touchobj.clientX); 
         starty = parseInt(touchobj.clientY); 
-        testa = startx;
+        liPosition = starty;
         if(box[i+1]){
-            if(i == n+1){
-                n++;
-            }
-            box[n+1].style.paddingTop = "28px";
+            box[i+1].style.paddingTop = "28px";
         }
         box[i].style.position = "fixed";
         }, false);
@@ -114,77 +111,37 @@ function addDrag(){
             box[i].style.opacity = "1";
             document.querySelector('body').style.boxShadow = "unset";
         }
-        console.log(i);
-        if(testa + 20 < movey){
+
+
+        if(liPosition + 25  < movey){
+            console.log("down 25px");
+            liPosition = movey;
             n++;
-            testa = movey;
-            if(n == i){
-                n++;
+            if(i == n){
+                return;
             }
-            if(box[n]){
-                box[n].style.paddingTop = "0px";
+            if(box[i+n]){
+                box[i+n].style.paddingTop = "unset";
             }
-            if(box[n+1]){
-                box[n+1].style.paddingTop = "28px";   
+            if(box[i+(n+1)]){
+                box[i+(n+1)].style.paddingTop = "28px";
             }
-            
+        }
+        if(liPosition - 25  > movey){ 
+            console.log("up 25px");
+            liPosition = movey;
+            n--;
+            if(i == n){
+                return;
+            }
+            if( box[i+n]){
+                box[i+n].style.paddingTop = "28px";
+            }
+            if( box[i+(n+1)]){
+            box[i+(n+1)].style.paddingTop = "0px";
+            }
         }
 
-        // if(testa - 20 > movey){ 
-        //     console.log("test");
-        //     box[n].style.backgroundColor = "red"; 
-        //     n--;
-        //     testa = movey;
-        //     console.log(n)
-        //     if(box[n+2]){
-        //     box[n+2].style.paddingTop = "0px"; 
-        //     }
-        //     if(box[n+1]){
-        //         box[n+1].style.paddingTop = "28px"; 
-        //     }
-        // }
-
-
-        // if(box[n+1]){
-        // box[n+1].style.paddingTop = "28px";
-        // box[i].style.paddingTop = "0px";
-        // }
-        
-
-        // if(box[n]){
-        // box[n].style.paddingTop = "0px";
-        // }
-
-
-        // if(testa + 20 < movey){
-        //     n++;
-        //     console.log(n);
-        //     testa = movey;
-        //     if(box[n]){
-        //     box[n].style.paddingTop = "0px";
-        //     }
-        //     if(box[n-1]){
-        //         n++;
-        //     }
-        //     box[n-1].style.backgroundColor = "red";
-        // }
-        // else{
-        //     if(box[n+1]){
-        //      box[n+1].style.paddingTop = "28px";
-        //     }
-        // }
-
-        // if(testa - 20 > movey){         
-        //     testa = movey;
-        //     n--;
-        //     console.log(n)  
-        //     box[n-1].style.paddingTop = "28px";
-        //     box[n].style.paddingTop = "0px";
-        //     if(box[n+2]){
-        //     box[n+2].style.paddingTop = "0px";
-        //     }
-        //     box[n].style.backgroundColor = "red";
-        // }
 
 
      
