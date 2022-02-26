@@ -130,7 +130,7 @@ function addDrag(){
             }
         }
         if(liPosition - 25  > movey){ 
-            console.log(i);
+            // console.log(i);
             liPosition = movey;
             n--;
             if(i == n){
@@ -157,20 +157,40 @@ function addDrag(){
             const list = JSON.parse(localStorage.getItem("data"));
 
             const newList = {};
+            console.log(i);
+            console.log(n);
+            console.log(i+n);
+            var newOrder = i+n;
+
+            if(newOrder > box.length){
+                newOrder = box.length-1;
+            }
+            if(newOrder < 0){
+                newOrder = 0;
+            }
 
             for (key in list) {
-                if(key != box[i].innerHTML){
-                    if(key == box[i+n].innerHTML){
-                        newList[key] = list[key];
+                if(key == box[newOrder].innerHTML){
+                    if(newOrder < i){
                         newList[box[i].innerHTML] = list[box[i].innerHTML];
+                        newList[key] = list[key];
+                    }
+                    newList[key] = list[key];
+                    newList[box[i].innerHTML] = list[box[i].innerHTML];
+                }
+                else{
+                    if(key == box[i].innerHTML){
                     }
                     else{
-                        newList[key] = list[key];
+                    newList[key] = list[key];
                     }
                 }
             }
-            console.log(list);
-            console.log(newList);
+            if(newOrder > box.length){
+                console.log("noting");
+            }
+  
+            
 
 
             localStorage.setItem("data", JSON.stringify(newList));
