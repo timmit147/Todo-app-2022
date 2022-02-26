@@ -88,43 +88,42 @@ document.body.addEventListener("dblclick", event => {
 }
 
 // backgroundImage
-if(localStorage.getItem("backgroundImage")){
-  document.body.style.backgroundImage = "url('"+ localStorage.getItem("backgroundImage") +"')";
+if(localStorage.getItem("img")){
+    var backgroundImage = localStorage.getItem("img");
+    document.body.style.backgroundImage = "url('"+ localStorage.img +"')";
 }
-
-
-function handleFileSelect(evt) {
-    var files = evt.target.files; // FileList object
-
-    // Loop through the FileList and render image files as thumbnails.
-    for (var i = 0, f; f = files[i]; i++) {
-
-      // Only process image files.
-      if (!f.type.match('image.*')) {
-        continue;
+    
+    
+    function handleFileSelect(evt) {
+        var files = evt.target.files; // FileList object
+    
+        // Loop through the FileList and render image files as thumbnails.
+        for (var i = 0, f; f = files[i]; i++) {
+    
+          // Only process image files.
+          if (!f.type.match('image.*')) {
+            continue;
+          }
+    
+          var reader = new FileReader();
+    
+          // Closure to capture the file information.
+          reader.onload = (function(theFile) {
+            return function(e) {
+              // Render thumbnail.
+              localStorage.setItem('img', e.target.result);
+            };
+          })(f);
+    
+          // Read in the image file as a data URL.
+          reader.readAsDataURL(f);
+                    location.reload();
+        }
       }
-
-      var reader = new FileReader();
-
-      // Closure to capture the file information.
-      reader.onload = (function(theFile) {
-        return function(e) {
-          // Render thumbnail.
-          localStorage.setItem("backgroundImage", e.target.result);
-          console.log(e.target.result);
-        };
-      })(f);
-
-        // Read in the image file as a data URL.
-        for(var i=0;i<files.length;i++){
-            reader.readAsDataURL(files[i]);
-         }
-        location.reload();
+    
+    if(document.getElementById('files')){
+     document.getElementById('files').addEventListener('change', handleFileSelect, false);
     }
-  }
-
-  document.getElementById("files").addEventListener("change", handleFileSelect, false);
-
 
 
 // Add new item to list
