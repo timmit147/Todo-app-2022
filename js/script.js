@@ -33,7 +33,7 @@ function createList() {
 // detect shift click
 document.addEventListener("keyup", function(event) {
     if (event.keyCode === 17) {
-        if(document.querySelector("input")){
+        if(document.querySelector("ul input")){
             var select = document.querySelector('ul');
             select.removeChild(select.lastChild);
             return;
@@ -43,7 +43,7 @@ document.addEventListener("keyup", function(event) {
                 newInput();
             }
             else{
-                document.querySelector("input").select();
+                document.querySelector("ul input").select();
             }
         }
     }
@@ -64,7 +64,7 @@ function newInput(){
 
 // Double tap to add input
 document.body.addEventListener("dblclick", event => {
-    if(document.querySelector("input")){
+    if(document.querySelector("ul input")){
         var select = document.querySelector('ul');
         select.removeChild(select.lastChild);
         return;
@@ -74,7 +74,7 @@ document.body.addEventListener("dblclick", event => {
             newInput();
         }
         else{
-            document.querySelector("input").select();
+            document.querySelector("ul input").select();
         }
     }
 })
@@ -87,21 +87,76 @@ document.body.addEventListener("dblclick", event => {
     return false;
 }
 
+const inputElement = document.getElementById("files");
+inputElement.addEventListener("change", handleFileSelect, false);
+
+
+function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object
+
+    // Loop through the FileList and render image files as thumbnails.
+    for (var i = 0, f; f = files[i]; i++) {
+
+      // Only process image files.
+      if (!f.type.match('image.*')) {
+        continue;
+      }
+
+      var reader = new FileReader();
+
+      // Closure to capture the file information.
+      reader.onload = (function(theFile) {
+        return function(e) {
+          // Render thumbnail.
+          console.log(e.target.result);
+          localStorage.setItem("backgroundImage", e.target.result);
+        };
+      })(f);
+
+      // Read in the image file as a data URL.
+      reader.readAsDataURL(f);
+        location.reload();
+    }
+  }
+
+  if(localStorage.getItem("backgroundImage")){
+      console.log("a");
+    document.body.style.backgroundImage = "url('"+ localStorage.getItem("backgroundImage") +"')";
+  }
+
+
 // Add new item to list
   function newListitem() {
     const list = JSON.parse(localStorage.getItem("data"));
-    list[document.querySelector("input").value] = { 'hoi2':'test2'};
-    if(document.querySelector("input").value == ""){
+    var numberToString = document.querySelector("ul input").value;
+    if(!isNaN(document.querySelector("input").value)){
+        numberToString = document.querySelector("ul input").value + " ";
+    }
+    list[numberToString] = { 'hoi2':'test2'};
+    if(document.querySelector("ul input").value == ""){
         var select = document.querySelector('ul');
         select.removeChild(select.lastChild);
         return;
     }
-    if(document.querySelector("input").value == ".backgroundred"){
+    if(document.querySelector("ul input").value == ".backgroundred"){
         document.body.style.backgroundColor = "red";
         var select = document.querySelector('ul');
         select.removeChild(select.lastChild);
         return;
     }
+    if(document.querySelector("ul input").value == ".image"){
+        document.getElementById("files").click();
+        var select = document.querySelector('ul');
+        select.removeChild(select.lastChild);
+        return;
+    }
+    if(document.querySelector("ul input").value == ".dellall"){
+        const list = {};
+        localStorage.setItem("data", JSON.stringify(list));
+        createList();
+        return;
+    }
+
     localStorage.setItem("data", JSON.stringify(list));
     createList();
     newInput();

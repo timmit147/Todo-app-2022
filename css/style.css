@@ -8,6 +8,7 @@ body{
     background-color: black;
     color: white;
     height: 100vh;
+    background-size: cover;
 }
 
 ul{
@@ -17,4 +18,8 @@ ul{
 li{
     padding-bottom: 10px;
     /* transition: padding 0.3s; */
+}
+
+input[type="file"]{
+    display: none;
 }
