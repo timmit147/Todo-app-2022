@@ -94,7 +94,7 @@ if(localStorage.getItem("img")){
 }
     
     
-    function handleFileSelect(evt) {
+    async function handleFileSelect(evt) {
         var files = evt.target.files; // FileList object
     
         // Loop through the FileList and render image files as thumbnails.
