@@ -27,7 +27,27 @@ function createList() {
         ul.appendChild(li);
     }
     addDrag();
+      
 }
+
+// detect shift click
+document.addEventListener("keyup", function(event) {
+    if (event.keyCode === 17) {
+        if(document.querySelector("input")){
+            var select = document.querySelector('ul');
+            select.removeChild(select.lastChild);
+            return;
+        }
+        else{
+            if(!document.querySelector("form")){
+                newInput();
+            }
+            else{
+                document.querySelector("input").select();
+            }
+        }
+    }
+});
 
 //   Add new input
 function newInput(){
@@ -44,13 +64,21 @@ function newInput(){
 
 // Double tap to add input
 document.body.addEventListener("dblclick", event => {
-    if(!document.querySelector("form")){
-        newInput();
+    if(document.querySelector("input")){
+        var select = document.querySelector('ul');
+        select.removeChild(select.lastChild);
+        return;
     }
     else{
-        document.querySelector("input").select();
+        if(!document.querySelector("form")){
+            newInput();
+        }
+        else{
+            document.querySelector("input").select();
+        }
     }
 })
+
 
 //   prevent submit
   function mySubmitFunction(e) {
@@ -64,6 +92,12 @@ document.body.addEventListener("dblclick", event => {
     const list = JSON.parse(localStorage.getItem("data"));
     list[document.querySelector("input").value] = { 'hoi2':'test2'};
     if(document.querySelector("input").value == ""){
+        var select = document.querySelector('ul');
+        select.removeChild(select.lastChild);
+        return;
+    }
+    if(document.querySelector("input").value == ".backgroundred"){
+        document.body.style.backgroundColor = "red";
         var select = document.querySelector('ul');
         select.removeChild(select.lastChild);
         return;
@@ -154,51 +188,6 @@ function addDrag(){
         }, false);
 
         box[i].addEventListener('touchend', function(e){
-            const list = JSON.parse(localStorage.getItem("data"));
-
-            const newList = {};
-            console.log(i);
-            console.log(n);
-            console.log(i+n);
-            var newOrder = i+n;
-
-            if(newOrder > box.length){
-                newOrder = box.length-1;
-            }
-            if(newOrder < 0){
-                newOrder = 0;
-            }
-
-            for (key in list) {
-                if(key == box[newOrder].innerHTML){
-                    if(newOrder < i){
-                        newList[box[i].innerHTML] = list[box[i].innerHTML];
-                        newList[key] = list[key];
-                    }
-                    newList[key] = list[key];
-                    newList[box[i].innerHTML] = list[box[i].innerHTML];
-                }
-                else{
-                    if(key == box[i].innerHTML){
-                    }
-                    else{
-                    newList[key] = list[key];
-                    }
-                }
-            }
-            if(newOrder > box.length){
-                console.log("noting");
-            }
-  
-            
-
-
-            localStorage.setItem("data", JSON.stringify(newList));
-
-            if(box[i+1]){
-                box[i+1].style.paddingTop = "unset";
-            }
-            box[i].style.position = "unset"
             if(movex > window.innerWidth - 50){
                 const list = JSON.parse(localStorage.getItem("data"));
                 delete list[box[i].innerHTML];
@@ -206,7 +195,49 @@ function addDrag(){
                 createList();
                 document.querySelector('body').style.boxShadow = "unset";
             }
-            createList();
+            else{
+
+                const list = JSON.parse(localStorage.getItem("data"));
+                const newList = {};
+                var newOrder = i+n;
+
+                if(newOrder > box.length){
+                    newOrder = box.length-1;
+                }
+                if(newOrder < 0){
+                    newOrder = 0;
+                }
+
+                for (key in list) {
+                    if(key == box[newOrder].innerHTML){
+                        if(newOrder < i){
+                            newList[box[i].innerHTML] = list[box[i].innerHTML];
+                            newList[key] = list[key];
+                        }
+                        newList[key] = list[key];
+                        newList[box[i].innerHTML] = list[box[i].innerHTML];
+                    }
+                    else{
+                        if(key == box[i].innerHTML){
+                        }
+                        else{
+                        newList[key] = list[key];
+                        }
+                    }
+                }
+                if(newOrder > box.length){
+                    console.log("noting");
+                }
+    
+
+                localStorage.setItem("data", JSON.stringify(newList));
+
+                if(box[i+1]){
+                    box[i+1].style.paddingTop = "unset";
+                }
+                box[i].style.position = "unset"
+                createList();
+            }
         }, false);
     }
 }
