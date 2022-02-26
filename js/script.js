@@ -114,7 +114,6 @@ function addDrag(){
 
 
         if(liPosition + 25  < movey){
-            console.log("down 25px");
             liPosition = movey;
             n++;
             if(i == n){
@@ -131,7 +130,7 @@ function addDrag(){
             }
         }
         if(liPosition - 25  > movey){ 
-            console.log("up 25px");
+            console.log(i);
             liPosition = movey;
             n--;
             if(i == n){
@@ -155,6 +154,27 @@ function addDrag(){
         }, false);
 
         box[i].addEventListener('touchend', function(e){
+            const list = JSON.parse(localStorage.getItem("data"));
+
+            const newList = {};
+
+            for (key in list) {
+                if(key != box[i].innerHTML){
+                    if(key == box[i+n].innerHTML){
+                        newList[key] = list[key];
+                        newList[box[i].innerHTML] = list[box[i].innerHTML];
+                    }
+                    else{
+                        newList[key] = list[key];
+                    }
+                }
+            }
+            console.log(list);
+            console.log(newList);
+
+
+            localStorage.setItem("data", JSON.stringify(newList));
+
             if(box[i+1]){
                 box[i+1].style.paddingTop = "unset";
             }
@@ -166,6 +186,7 @@ function addDrag(){
                 createList();
                 document.querySelector('body').style.boxShadow = "unset";
             }
+            createList();
         }, false);
     }
 }
