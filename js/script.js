@@ -120,11 +120,14 @@ function addDrag(){
             if(i == n){
                 return;
             }
+            if(box[i+(n+1)]){
+                box[i+(n+1)].style.paddingTop = "28px";
+            }
             if(box[i+n]){
                 box[i+n].style.paddingTop = "unset";
             }
-            if(box[i+(n+1)]){
-                box[i+(n+1)].style.paddingTop = "28px";
+            if(box[i+(n-1)]){
+                box[i+(n-1)].style.paddingTop = "unset";
             }
         }
         if(liPosition - 25  > movey){ 
@@ -138,7 +141,10 @@ function addDrag(){
                 box[i+n].style.paddingTop = "28px";
             }
             if( box[i+(n+1)]){
-            box[i+(n+1)].style.paddingTop = "0px";
+            box[i+(n+1)].style.paddingTop = "unset";
+            }
+            if( box[i+(n+2)]){
+                box[i+(n+2)].style.paddingTop = "unset";
             }
         }
 
