@@ -39,7 +39,7 @@ document.addEventListener("keyup", function(event) {
             return;
         }
         else{
-            if(!document.querySelector("form")){
+            if(!document.querySelector("ul form")){
                 newInput();
             }
             else{
@@ -70,7 +70,7 @@ document.body.addEventListener("dblclick", event => {
         return;
     }
     else{
-        if(!document.querySelector("form")){
+        if(!document.querySelector("ul form")){
             newInput();
         }
         else{
@@ -91,8 +91,6 @@ document.body.addEventListener("dblclick", event => {
 if(localStorage.getItem("backgroundImage")){
   document.body.style.backgroundImage = "url('"+ localStorage.getItem("backgroundImage") +"')";
 }
-
-document.getElementById("files").addEventListener("change", handleFileSelect, false);
 
 
 function handleFileSelect(evt) {
@@ -117,11 +115,15 @@ function handleFileSelect(evt) {
         };
       })(f);
 
-      // Read in the image file as a data URL.
-      reader.readAsDataURL(f);
+        // Read in the image file as a data URL.
+        for(var i=0;i<files.length;i++){
+            reader.readAsDataURL(files[i]);
+         }
         location.reload();
     }
   }
+
+  document.getElementById("files").addEventListener("change", handleFileSelect, false);
 
 
 
