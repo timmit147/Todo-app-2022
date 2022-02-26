@@ -87,8 +87,12 @@ document.body.addEventListener("dblclick", event => {
     return false;
 }
 
-const inputElement = document.getElementById("files");
-inputElement.addEventListener("change", handleFileSelect, false);
+// backgroundImage
+if(localStorage.getItem("backgroundImage")){
+  document.body.style.backgroundImage = "url('"+ localStorage.getItem("backgroundImage") +"')";
+}
+
+document.getElementById("files").addEventListener("change", handleFileSelect, false);
 
 
 function handleFileSelect(evt) {
@@ -108,8 +112,8 @@ function handleFileSelect(evt) {
       reader.onload = (function(theFile) {
         return function(e) {
           // Render thumbnail.
-          console.log(e.target.result);
           localStorage.setItem("backgroundImage", e.target.result);
+          console.log(e.target.result);
         };
       })(f);
 
@@ -119,10 +123,6 @@ function handleFileSelect(evt) {
     }
   }
 
-  if(localStorage.getItem("backgroundImage")){
-      console.log("a");
-    document.body.style.backgroundImage = "url('"+ localStorage.getItem("backgroundImage") +"')";
-  }
 
 
 // Add new item to list
