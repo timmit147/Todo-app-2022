@@ -10,7 +10,7 @@ function startScript() {
         // do nothing
     }
     else{
-        const list = { 'Double tap to add new item': {"newitme":"new"},'Click item to open folder':{"newitme2":"new2"} };
+        const list = { 'Double tap to add new item': {"newitme":"new"},'Click item to open folder':{"newitme2":"new2","newitme3":"new3"} };
         localStorage.setItem("data", JSON.stringify(list));
         localStorage.setItem("new", 1);
     }
@@ -25,10 +25,19 @@ function createList() {
     const list = JSON.parse(localStorage.getItem("data"));
     document.querySelector("ul").innerHTML = "";
     for (key in list) {
-        // console.log();
+        var keyAmounth = 0;
+        for (item in list[key]) {
+            keyAmounth++;
+        }
+        
         const ul = document.querySelector("ul");
         const li = document.createElement("li");
-        li.appendChild(document.createTextNode(key));
+        // if(keyAmounth != 0){
+        //     li.appendChild(document.createTextNode(key + " ("+keyAmounth+")"));
+        // }
+        // else{
+            li.appendChild(document.createTextNode(key));
+        // }
         ul.appendChild(li);
     }
     addDrag();
@@ -88,7 +97,6 @@ document.body.addEventListener("dblclick", event => {
 
 document.body.addEventListener("click", event => {
         createList();
-        return;
 })
 
 
@@ -146,7 +154,7 @@ if(localStorage.getItem("img")){
     if(!isNaN(document.querySelector("input").value)){
         numberToString = document.querySelector("ul input").value + " ";
     }
-    list[numberToString] = { 'hoi2':'test2'};
+    list[numberToString] = { };
     if(document.querySelector("ul input").value == ""){
         var select = document.querySelector('ul');
         select.removeChild(select.lastChild);
@@ -322,7 +330,6 @@ function addDrag(){
                 else{
                     var oldKey = box[i].innerHTML;
                     var changeList = JSON.parse(localStorage.getItem("data"));
-
                     onlyOnes = function(e) {
                         if (event.keyCode === 13) {
                             if(changeList[oldKey] != changeList[box[i].innerHTML]){
@@ -330,11 +337,11 @@ function addDrag(){
                                 delete changeList[oldKey];
                                 localStorage.setItem("data", JSON.stringify(changeList));
                                 createList();
-                                console.log(changeList);
                                 window.document.removeEventListener("keydown", onlyOnes); 
                             }
                             else{
                                 createList();
+                                window.document.removeEventListener("keydown", onlyOnes); 
                             }
                         }
 
