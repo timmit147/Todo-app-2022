@@ -25,7 +25,7 @@ function createList() {
     const list = JSON.parse(localStorage.getItem("data"));
     document.querySelector("ul").innerHTML = "";
     for (key in list) {
-        
+        // console.log();
         const ul = document.querySelector("ul");
         const li = document.createElement("li");
         li.appendChild(document.createTextNode(key));
@@ -85,8 +85,8 @@ document.body.addEventListener("dblclick", event => {
     }
 })
 
+
 document.body.addEventListener("click", event => {
-        // console.log("test");
         createList();
         return;
 })
@@ -322,20 +322,26 @@ function addDrag(){
                 else{
                     var oldKey = box[i].innerHTML;
                     var changeList = JSON.parse(localStorage.getItem("data"));
-                    document.addEventListener("keydown", function onlyOnes(event) {
-                            if (event.keyCode === 13) {
+
+                    onlyOnes = function(e) {
+                        if (event.keyCode === 13) {
+                            if(changeList[oldKey] != changeList[box[i].innerHTML]){
                                 changeList[box[i].innerHTML] = changeList[oldKey];
-                            delete changeList[oldKey];
-                            localStorage.setItem("data", JSON.stringify(changeList));
-                            window.removeEventListener("keydown", onlyOnes);
-                            createList();
-                            console.log(changeList);
+                                delete changeList[oldKey];
+                                localStorage.setItem("data", JSON.stringify(changeList));
+                                createList();
+                                console.log(changeList);
+                                window.document.removeEventListener("keydown", onlyOnes); 
                             }
-                        });
-                    
+                            else{
+                                createList();
+                            }
+                        }
 
-                    
+                    }
 
+                    window.document.addEventListener("keydown", onlyOnes);
+ 
                 }
             }
         }, false);
