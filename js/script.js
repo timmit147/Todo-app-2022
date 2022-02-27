@@ -44,9 +44,9 @@ function createList() {
       
 }
 
-// detect shift ctl
+// detect windows key
 document.addEventListener("keyup", function(event) {
-    if (event.keyCode === 17) {
+    if (event.keyCode === 91) {
         if(document.querySelector("ul input")){
             var select = document.querySelector('ul');
             select.removeChild(select.lastChild);
@@ -332,6 +332,7 @@ function addDrag(){
                     var changeList = JSON.parse(localStorage.getItem("data"));
                     onlyOnes = function(e) {
                         if (event.keyCode === 13) {
+                            event.preventDefault();
                             if(changeList[oldKey] != changeList[box[i].innerHTML]){
                                 changeList[box[i].innerHTML] = changeList[oldKey];
                                 delete changeList[oldKey];
