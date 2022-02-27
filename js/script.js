@@ -1,12 +1,16 @@
 // Functions
 
+window.onbeforeunload = function() {
+    return;
+  }
+
 // Function check if you are a new user eles create a new list
 function startScript() {
     if(localStorage.getItem("new") == 1){
         // do nothing
     }
     else{
-        const list = { 'Double tap to add new item': {},'Click item to open folder':{} };
+        const list = { 'Double tap to add new item': {"newitme":"new"},'Click item to open folder':{"newitme2":"new2"} };
         localStorage.setItem("data", JSON.stringify(list));
         localStorage.setItem("new", 1);
     }
@@ -21,6 +25,7 @@ function createList() {
     const list = JSON.parse(localStorage.getItem("data"));
     document.querySelector("ul").innerHTML = "";
     for (key in list) {
+        
         const ul = document.querySelector("ul");
         const li = document.createElement("li");
         li.appendChild(document.createTextNode(key));
@@ -30,7 +35,7 @@ function createList() {
       
 }
 
-// detect shift click
+// detect shift ctl
 document.addEventListener("keyup", function(event) {
     if (event.keyCode === 17) {
         if(document.querySelector("ul input")){
@@ -59,7 +64,8 @@ function newInput(){
     li.appendChild(form);
     const input = document.createElement("input");
     form.appendChild(input);
-    input.select();
+    input.focus();
+
 }
 
 // Double tap to add input
@@ -78,6 +84,13 @@ document.body.addEventListener("dblclick", event => {
         }
     }
 })
+
+document.body.addEventListener("click", event => {
+        // console.log("test");
+        createList();
+        return;
+})
+
 
 
 //   prevent submit
@@ -173,9 +186,20 @@ function addDrag(){
     var n = 0;
 
     var liPosition = 0;
-
+    
     for (let i = 0; i < box.length; i++) {
+        var edit = false;
+        var onlongtouch = function(a) { 
+            if(movex == undefined){
+                a.setAttribute("contenteditable", "true");
+                edit = true;
+            }
+            else{
+                edit = false;
+            }
+        };
         box[i].addEventListener('touchstart', function(e){
+            setTimeout(function() { onlongtouch(box[i]); } , 500)
         const touchobj = e.changedTouches[0]; 
         startx = parseInt(touchobj.clientX); 
         starty = parseInt(touchobj.clientY); 
@@ -292,19 +316,30 @@ function addDrag(){
                     box[i+1].style.paddingTop = "unset";
                 }
                 box[i].style.position = "unset"
-                createList();
+                if(edit != true){
+                    createList();
+                }
+                else{
+                    var oldKey = box[i].innerHTML;
+                    var changeList = JSON.parse(localStorage.getItem("data"));
+                    document.addEventListener("keydown", function onlyOnes(event) {
+                            if (event.keyCode === 13) {
+                                changeList[box[i].innerHTML] = changeList[oldKey];
+                            delete changeList[oldKey];
+                            localStorage.setItem("data", JSON.stringify(changeList));
+                            window.removeEventListener("keydown", onlyOnes);
+                            createList();
+                            console.log(changeList);
+                            }
+                        });
+                    
+
+                    
+
+                }
             }
         }, false);
     }
 }
  
 
-
-
-
-
-
-
-// old
-// console.log(NewList[Object.keys(NewList)[0]]); 
-// console.log(NewList[Object.keys(NewList)[1]]); 

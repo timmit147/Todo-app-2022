@@ -2,6 +2,11 @@
     margin: 0px;
     padding: 0px;
     list-style: none;
+    user-select:none;
+    -moz-user-select:none;
+    -webkit-touch-callout:none;
+    -webkit-touch-callout:none;
+    -ms-user-select:none;
 }
 
 body{
@@ -13,7 +18,13 @@ body{
 
 ul{
     padding: 30px;
+    height: 70vh;
+    overflow: scroll;
 }
+
+ul::-webkit-scrollbar {
+    display: none;
+  }
 
 li{
     padding-bottom: 10px;
