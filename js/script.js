@@ -111,7 +111,6 @@ if(localStorage.getItem("img")){
           reader.onload = (function(theFile) {
             return function(e) {
               // Render thumbnail.
-              alert(e.target.result);
               localStorage.setItem('img', e.target.result);
             };
           })(f);
