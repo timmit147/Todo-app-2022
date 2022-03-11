@@ -1,28 +1,63 @@
-// Functions
+//// Step 1: get data from localStorage
 
-window.onbeforeunload = function() {
-    return;
-  }
-
-// Function check if you are a new user eles create a new list
-function startScript() {
-    if(localStorage.getItem("new") == 1){
-        // do nothing
-    }
-    else{
-        const list = { 'Double tap to add new item': {"newitme":"new"},'Click item to open folder':{"newitme2":"new2","newitme3":"new3"} };
-        localStorage.setItem("data", JSON.stringify(list));
-        localStorage.setItem("new", 1);
-    }
-    createList();
+// Make getItem localStorage shorter
+function get(item){
+    return localStorage.getItem(item);
 }
 
-// Activate script
-startScript();
+// Make setItem localStorage shorter
+function set(item, input){
+    return localStorage.setItem(item, input);
+}
 
-// Function get localStorage data in list
+// If localStorage is empty place tutorial text
+function newUser() {
+    if(!get("new") == 1){
+        const list = { 'Double tap to add new item': {"newitme":"new"},'Click item to open folder':{"newitme2":"new2","newitme3":"new3"} };
+        set("data", JSON.stringify(list));
+        set("new", 1);
+        set("path", "");
+    }
+}
+set("path", "");
+// set("path", "");
+newUser();
+
+//// Step 2: Convert localStorage to Json list
+function localStorageToJson(input){
+    return JSON.parse(get(input));
+}
+
+//// Step 3: Change path
+function changePath(){
+    if(get("path") == ""){
+        return JSON.parse(localStorage.getItem("data"));
+    }
+    else{
+        return Object.byString(localStorageToJson("data"), get("path"));
+    }
+}
+
+// funtion string to properties
+Object.byString = function(o, s) {
+    s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+    s = s.replace(/^\./, '');           // strip a leading dot
+    var a = s.split('.');
+    for (var i = 0, n = a.length; i < n; ++i) {
+        var k = a[i];
+        if (k in o) {
+            o = o[k];
+        } else {
+            return;
+        }
+    }
+    return o;
+}
+
+
+//// Step 4: Make a HTML list
 function createList() {
-    const list = JSON.parse(localStorage.getItem("data"));
+    list = changePath();
     document.querySelector("ul").innerHTML = "";
     for (key in list) {
         var keyAmounth = 0;
@@ -32,17 +67,24 @@ function createList() {
         
         const ul = document.querySelector("ul");
         const li = document.createElement("li");
-        // if(keyAmounth != 0){
-        //     li.appendChild(document.createTextNode(key + " ("+keyAmounth+")"));
-        // }
-        // else{
+        li.id = key;
+        li.addEventListener("click", event => {
+            set("path", li.id);
+            createList();
+        });
+        if(keyAmounth != 0){
+            li.appendChild(document.createTextNode(key + " ("+keyAmounth+")"));
+        }
+        else{
             li.appendChild(document.createTextNode(key));
-        // }
+        }
         ul.appendChild(li);
     }
     addDrag();
-      
 }
+
+createList();
+
 
 // detect shift ctl
 document.addEventListener("keyup", function(event) {
@@ -93,12 +135,6 @@ document.body.addEventListener("dblclick", event => {
         }
     }
 })
-
-
-document.body.addEventListener("click", event => {
-        createList();
-})
-
 
 
 //   prevent submit
@@ -344,6 +380,7 @@ function addDrag(){
                                 createList();
                                 window.document.removeEventListener("keydown", onlyOnes); 
                             }
+                            return false;
                         }
 
                     }
@@ -357,3 +394,23 @@ function addDrag(){
 }
  
 
+
+
+// Move body
+document.body.addEventListener('touchstart', function(e){ 
+const touchobj = e.changedTouches[0]; 
+startx = parseInt(touchobj.clientX);  
+}, false);
+
+document.body.addEventListener('touchmove', function(e){
+    const touchobj = e.changedTouches[0]; 
+    movex = parseInt(touchobj.clientX); 
+}, false);
+
+document.body.addEventListener('touchend', function(e){
+    const touchobj = e.changedTouches[0]; 
+    endx = parseInt(touchobj.clientX); 
+    if(endx + 150 < startx ){
+        createList();
+    }
+}, false);
