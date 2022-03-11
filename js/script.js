@@ -16,11 +16,10 @@ function newUser() {
         const list = { 'Double tap to add new item': {"newitme":"new"},'Click item to open folder':{"newitme2":"new2","newitme3":"new3"} };
         set("data", JSON.stringify(list));
         set("new", 1);
-        set("path", "");
+        set("path");
     }
 }
-set("path", "");
-// set("path", "");
+
 newUser();
 
 //// Step 2: Convert localStorage to Json list
@@ -34,9 +33,30 @@ function changePath(){
         return JSON.parse(localStorage.getItem("data"));
     }
     else{
-        return Object.byString(localStorageToJson("data"), get("path"));
+        const split = get("path").split('~');
+        var newSplit = "";
+        for (key in split){
+            if(!split[key] == ""){  
+                newSplit = newSplit + "."+split[key]+"";
+            }
+        }
+        return Object.byString(localStorageToJson("data"), newSplit);
     }
 }
+
+function getPath(){
+
+        const split = get("path").split('~');
+        var newSplit = "";
+        for (key in split){
+            if(!split[key] == ""){  
+                newSplit = newSplit + "."+split[key]+"";
+            }
+        }
+        return newSplit;
+}
+
+console.log(getPath());
 
 // funtion string to properties
 Object.byString = function(o, s) {
@@ -69,7 +89,8 @@ function createList() {
         const li = document.createElement("li");
         li.id = key;
         li.addEventListener("click", event => {
-            set("path", li.id);
+            console.log(get("path")+"~"+li.id);
+            set("path", get("path")+"~"+li.id);
             createList();
         });
         if(keyAmounth != 0){
@@ -185,12 +206,20 @@ if(localStorage.getItem("img")){
 
 // Add new item to list
   function newListitem() {
-    const list = JSON.parse(localStorage.getItem("data"));
+    var list = JSON.parse(localStorage.getItem("data"));
     var numberToString = document.querySelector("ul input").value;
     if(!isNaN(document.querySelector("input").value)){
         numberToString = document.querySelector("ul input").value + " ";
     }
-    list[numberToString] = { };
+    
+
+
+    const newPath = getPath();
+    console.log(newPath);
+    console.log(Object.byString(list, newPath));
+    Object.byString(list, newPath)[numberToString] = {};
+
+
     if(document.querySelector("ul input").value == ""){
         var select = document.querySelector('ul');
         select.removeChild(select.lastChild);
@@ -323,38 +352,40 @@ function addDrag(){
 
                 const list = JSON.parse(localStorage.getItem("data"));
                 const newList = {};
-                var newOrder = i+n;
+                let newOrder = i+n;
 
                 if(newOrder > box.length){
                     newOrder = box.length-1;
                 }
+
                 if(newOrder < 0){
                     newOrder = 0;
                 }
 
-                for (key in list) {
-                    if(key == box[newOrder].innerHTML){
-                        if(newOrder < i){
-                            newList[box[i].innerHTML] = list[box[i].innerHTML];
-                            newList[key] = list[key];
-                        }
-                        newList[key] = list[key];
-                        newList[box[i].innerHTML] = list[box[i].innerHTML];
-                    }
-                    else{
-                        if(key == box[i].innerHTML){
-                        }
-                        else{
-                        newList[key] = list[key];
-                        }
-                    }
-                }
-                if(newOrder > box.length){
-                    console.log("noting");
-                }
-    
+                if(box[newOrder] != undefined){
 
-                localStorage.setItem("data", JSON.stringify(newList));
+                    for (key in list) {
+                            if(key == box[newOrder].id){
+                                if(newOrder < i){
+                                    newList[box[i].id] = list[box[i].id];
+                                    newList[key] = list[key];
+                                }
+                                newList[key] = list[key];
+                                newList[box[i].id] = list[box[i].id];
+                            }
+                            else{
+                                if(key == box[i].id){
+                                }
+                                else{
+                                newList[key] = list[key];
+                                }
+                            }
+                    }
+                    localStorage.setItem("data", JSON.stringify(newList));
+                }
+
+
+                createList();
 
                 if(box[i+1]){
                     box[i+1].style.paddingTop = "unset";
@@ -364,13 +395,13 @@ function addDrag(){
                     createList();
                 }
                 else{
-                    var oldKey = box[i].innerHTML;
+                    var oldKey = box[i].id;
                     var changeList = JSON.parse(localStorage.getItem("data"));
                     onlyOnes = function(e) {
                         if (e.keyCode === 13) {
                             e.preventDefault();
-                            if(changeList[oldKey] != changeList[box[i].innerHTML]){
-                                changeList[box[i].innerHTML] = changeList[oldKey];
+                            if(changeList[oldKey] != changeList[box[i].id]){
+                                changeList[box[i].id] = changeList[oldKey];
                                 delete changeList[oldKey];
                                 localStorage.setItem("data", JSON.stringify(changeList));
                                 createList();
@@ -393,6 +424,11 @@ function addDrag(){
     }
 }
  
+function shortenPath(){
+    var split =  get("path").split("~");
+    return split.slice(0, split.length - 1).join("~");
+}
+
 
 
 
@@ -411,6 +447,7 @@ document.body.addEventListener('touchend', function(e){
     const touchobj = e.changedTouches[0]; 
     endx = parseInt(touchobj.clientX); 
     if(endx + 150 < startx ){
+        set("path", shortenPath());
         createList();
     }
 }, false);
