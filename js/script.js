@@ -56,7 +56,6 @@ function getPath(){
         return newSplit;
 }
 
-console.log(getPath());
 
 // funtion string to properties
 Object.byString = function(o, s) {
@@ -89,7 +88,6 @@ function createList() {
         const li = document.createElement("li");
         li.id = key;
         li.addEventListener("click", event => {
-            console.log(get("path")+"~"+li.id);
             set("path", get("path")+"~"+li.id);
             createList();
         });
@@ -106,6 +104,10 @@ function createList() {
 
 createList();
 
+
+window.onbeforeunload = function() {
+    return;
+  }
 
 // detect shift ctl
 document.addEventListener("keyup", function(event) {
@@ -215,9 +217,12 @@ if(localStorage.getItem("img")){
 
 
     const newPath = getPath();
-    console.log(newPath);
-    console.log(Object.byString(list, newPath));
-    Object.byString(list, newPath)[numberToString] = {};
+    if(newPath){
+        Object.byString(list, newPath)[numberToString] = {};
+    }
+    else{
+        list[numberToString] = {};
+    }
 
 
     if(document.querySelector("ul input").value == ""){
@@ -342,7 +347,7 @@ function addDrag(){
 
         box[i].addEventListener('touchend', function(e){
             if(movex > window.innerWidth - 50){
-                const list = JSON.parse(localStorage.getItem("data"));
+                var list = JSON.parse(localStorage.getItem("data"));
                 delete list[box[i].innerHTML];
                 localStorage.setItem("data", JSON.stringify(list));
                 createList();
@@ -350,8 +355,19 @@ function addDrag(){
             }
             else{
 
-                const list = JSON.parse(localStorage.getItem("data"));
-                const newList = {};
+                const newPath = getPath();
+                var list = JSON.parse(localStorage.getItem("data"));
+                
+                function testaaa(){
+                if(newPath){
+                return Object.byString(list, newPath);
+                }
+                else{
+                    return list;
+                }
+                }
+                console.log(list);
+                var newList = {};
                 let newOrder = i+n;
 
                 if(newOrder > box.length){
@@ -364,24 +380,41 @@ function addDrag(){
 
                 if(box[newOrder] != undefined){
 
-                    for (key in list) {
+                    for (key in testaaa()) {
                             if(key == box[newOrder].id){
                                 if(newOrder < i){
-                                    newList[box[i].id] = list[box[i].id];
+                                    newList[box[i].id] = testaaa()[box[i].id];
                                     newList[key] = list[key];
                                 }
                                 newList[key] = list[key];
-                                newList[box[i].id] = list[box[i].id];
+                                newList[box[i].id] = testaaa()[box[i].id];
                             }
                             else{
                                 if(key == box[i].id){
                                 }
                                 else{
-                                newList[key] = list[key];
+                                newList[key] = testaaa()[key];
                                 }
                             }
                     }
-                    localStorage.setItem("data", JSON.stringify(newList));
+                    if(newPath){
+
+
+
+
+
+                            // dit nog fixen
+
+
+
+
+
+    
+                    }
+                    else{
+                        list = newList;
+                    }
+                    localStorage.setItem("data", JSON.stringify(list));
                 }
 
 
