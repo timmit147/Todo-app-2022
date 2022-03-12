@@ -255,6 +255,44 @@ if(localStorage.getItem("img")){
     newInput();
   }
 
+
+
+
+  function getPath2(){
+    const split = get("path").split('~');
+    var newSplit = "";
+    for (key in split){
+        if(!split[key] == ""){  
+            newSplit = newSplit + "["+split[key]+"]";
+        }
+    }
+    return newSplit;
+}
+
+Object.byString2 = function(o, s, newList ) {
+    s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+    s = s.replace(/^\./, '');           // strip a leading dot
+    var a = s.split('.');
+    for (var i = 0, n = a.length; i < n; ) {
+        var k = a[i];
+
+        if(a.length == i+1){
+            console.log("no");
+            return o[k] = newList;
+        }
+        else{
+            console.log("yes");
+            o = o[k];
+        
+        }
+        console.log(o);
+        ++i;
+    }
+    return o;
+}
+
+
+
 //   Add drag to all li items
 function addDrag(){
     const box = document.querySelectorAll("li");
@@ -347,26 +385,37 @@ function addDrag(){
         }, false);
 
         box[i].addEventListener('touchend', function(e){
+            const newPath = getPath();
+            var list = JSON.parse(localStorage.getItem("data"));
+            
+            function getList(){
+            if(newPath){
+            return Object.byString(list, newPath);
+            }
+            else{
+                return list;
+            }
+            }
             if(movex > window.innerWidth - 50){
-                var list = JSON.parse(localStorage.getItem("data"));
-                delete list[box[i].innerHTML];
+                var newList = getList();
+ 
+                const tostingtext = String(box[i].id);
+                console.log(newList);
+                delete newList[tostingtext];
+                console.log(newList);
+                const newPath2 = getPath2();
+                console.log(newPath2);
+                if(newPath2){
+                    Object.byString2(list, newPath2, newList);
+                }
+
                 localStorage.setItem("data", JSON.stringify(list));
                 createList();
                 document.querySelector('body').style.boxShadow = "unset";
             }
             else{
 
-                const newPath = getPath();
-                var list = JSON.parse(localStorage.getItem("data"));
-                
-                function getList(){
-                if(newPath){
-                return Object.byString(list, newPath);
-                }
-                else{
-                    return list;
-                }
-                }
+
                 // console.log(list);
                 var newList = {};
                 let newOrder = i+n;
@@ -405,16 +454,6 @@ function addDrag(){
                     if(newPath){
 
 
-                        function getPath2(){
-                            const split = get("path").split('~');
-                            var newSplit = "";
-                            for (key in split){
-                                if(!split[key] == ""){  
-                                    newSplit = newSplit + "."+split[key]+"";
-                                }
-                            }
-                            return newSplit;
-                        }
 
                         
 
@@ -424,27 +463,6 @@ function addDrag(){
                         // {afas: {…}, fa: {…}, af: {…}, fas: {…}}
                         console.log(newList);
 
-                        Object.byString2 = function(o, s, newList ) {
-                            s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
-                            s = s.replace(/^\./, '');           // strip a leading dot
-                            var a = s.split('.');
-                            for (var i = 0, n = a.length; i < n; ) {
-                                var k = a[i];
-    
-                                if(a.length == i+1){
-                                    console.log("no");
-                                    return o[k] = newList;
-                                }
-                                else{
-                                    console.log("yes");
-                                    o = o[k];
-                                
-                                }
-                                console.log(o);
-                                ++i;
-                            }
-                            return o;
-                        }
 
                         Object.byString2(list, newPath, newList);
 
