@@ -358,7 +358,7 @@ function addDrag(){
                 const newPath = getPath();
                 var list = JSON.parse(localStorage.getItem("data"));
                 
-                function testaaa(){
+                function getList(){
                 if(newPath){
                 return Object.byString(list, newPath);
                 }
@@ -366,7 +366,7 @@ function addDrag(){
                     return list;
                 }
                 }
-                console.log(list);
+                // console.log(list);
                 var newList = {};
                 let newOrder = i+n;
 
@@ -380,40 +380,77 @@ function addDrag(){
 
                 if(box[newOrder] != undefined){
 
-                    for (key in testaaa()) {
+
+                    for (key in getList()) {
                             if(key == box[newOrder].id){
                                 if(newOrder < i){
-                                    newList[box[i].id] = testaaa()[box[i].id];
-                                    newList[key] = list[key];
+                                    newList[box[i].id] = getList()[box[i].id];
+                                    newList[key] = getList()[key];
                                 }
-                                newList[key] = list[key];
-                                newList[box[i].id] = testaaa()[box[i].id];
+                                newList[key] = getList()[key];
+                                newList[box[i].id] = getList()[box[i].id];
                             }
                             else{
                                 if(key == box[i].id){
                                 }
                                 else{
-                                newList[key] = testaaa()[key];
+                                newList[key] = getList()[key];
                                 }
                             }
                     }
+
+                    console.log(newList);
+
                     if(newPath){
 
 
+                        function getPath2(){
+                            const split = get("path").split('~');
+                            var newSplit = "";
+                            for (key in split){
+                                if(!split[key] == ""){  
+                                    newSplit = newSplit + "."+split[key]+"";
+                                }
+                            }
+                            return newSplit;
+                        }
 
+                        
 
+                        // {afas: {…}, fa: {…}, fas: {…}, af: {…}}
+                        console.log(Object.byString(list, getPath2()));
 
-                            // dit nog fixen
+                        // {afas: {…}, fa: {…}, af: {…}, fas: {…}}
+                        console.log(newList);
 
-
-
-
-
+                        Object.byString2 = function(o, s, newList ) {
+                            s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+                            s = s.replace(/^\./, '');           // strip a leading dot
+                            var a = s.split('.');
+                            for (var i = 0, n = a.length; i < n; ) {
+                                var k = a[i];
     
-                    }
-                    else{
-                        list = newList;
-                    }
+                                if(a.length == i+1){
+                                    console.log("no");
+                                    return o[k] = newList;
+                                }
+                                else{
+                                    console.log("yes");
+                                    o = o[k];
+                                
+                                }
+                                console.log(o);
+                                ++i;
+                            }
+                            return o;
+                        }
+
+                        Object.byString2(list, newPath, newList);
+
+                        }
+                        else{
+                            list = newList;
+                        }
                     localStorage.setItem("data", JSON.stringify(list));
                 }
 
