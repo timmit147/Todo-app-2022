@@ -16,7 +16,7 @@ function newUser() {
         const list = { 'Double tap to add new item': {"newitme":"new"},'Click item to open folder':{"newitme2":"new2","newitme3":"new3"} };
         set("data", JSON.stringify(list));
         set("new", 1);
-        set("path");
+        set("path", "");
     }
 }
 
@@ -34,6 +34,7 @@ function changePath(){
     }
     else{
         const split = get("path").split('~');
+        console.log(get("path"));
         var newSplit = "";
         for (key in split){
             if(!split[key] == ""){  
@@ -189,7 +190,7 @@ if(localStorage.getItem("img")){
     
           // Closure to capture the file information.
           reader.onload = (function(theFile) {
-            return function(e) {
+            return async function(e) {
               // Render thumbnail.
               localStorage.setItem('img', e.target.result);
             };
