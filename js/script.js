@@ -196,13 +196,14 @@ backgroundImage();
             return async function(e) {
               // Render thumbnail.
               localStorage.setItem('img', e.target.result);
+              backgroundImage();
+              console.log("test");
             };
           })(f);
     
           // Read in the image file as a data URL.
           reader.readAsDataURL(f);
-          backgroundImage();
-        location.reload();
+        // location.reload();
         }
       }
     
