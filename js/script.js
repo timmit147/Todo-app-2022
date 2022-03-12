@@ -13,7 +13,7 @@ function set(item, input){
 // If localStorage is empty place tutorial text
 function newUser() {
     if(!get("new") == 1){
-        const list = { 'Double tap to add new item': {"newitme":"new"},'Click item to open folder':{"newitme2":"new2","newitme3":"new3"} };
+        const list = { 'Tutorial': {"Double tap to add new item":{},"Click item to open folder":{},"Swipe left to go back":{},"Drag item to right to delete":{}},"Settings":{"Type .image to change background":{},"Type .dellall to delete alle list items":{}} };
         set("data", JSON.stringify(list));
         set("new", 1);
         set("path", "");
