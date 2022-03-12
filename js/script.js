@@ -169,11 +169,14 @@ document.body.addEventListener("dblclick", event => {
 }
 
 // backgroundImage
-if(localStorage.getItem("img")){
-    var backgroundImage = localStorage.getItem("img");
-    document.body.style.backgroundImage = "url('"+ localStorage.img +"')";
+async function backgroundImage(){
+    if(localStorage.getItem("img")){
+        var backgroundImage = localStorage.getItem("img");
+        document.body.style.backgroundImage = "url('"+ localStorage.img +"')";
+    }
 }
-    
+
+backgroundImage();    
     
     async function handleFileSelect(evt) {
         var files = evt.target.files; // FileList object
@@ -198,6 +201,7 @@ if(localStorage.getItem("img")){
     
           // Read in the image file as a data URL.
           reader.readAsDataURL(f);
+          backgroundImage();
         location.reload();
         }
       }
